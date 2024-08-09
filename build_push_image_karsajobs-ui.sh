@@ -10,7 +10,7 @@ docker images
 docker tag karsajobs-ui:latest robifirmansyah/karsajobs-ui:latest
 
 # 4. Login ke Docker Hub 
-#docker login -u robifirmansyah
+docker login -u robifirmansyah
 
 # 5. Push image ke Docker Hub
 docker push robifirmansyah/karsajobs-ui:latest
