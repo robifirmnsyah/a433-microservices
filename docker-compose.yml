@@ -1,42 +1,66 @@
+# Versi format file Docker Compose
 version: "3.7"
 
 services:
+  # Layanan untuk order service
   order-service:
-    image: order-svc:latest
+    # Menggunakan image dari registry
+    image: robifirmansyah/order-service
+    # Pemetaan port dari container ke host
     ports:
     - "3000:3000"
+    # Container akan otomatis restart jika berhenti
     restart: always
+    # Bergantung pada layanan rabbitmq
     depends_on:
     - rabbitmq
+    # Variabel lingkungan
     environment:
       AMQP_URL: amqp://guest:guest@rabbitmq:5672
+    # Jaringan yang digunakan
     networks:
     - rabbitmq_network
 
+  # Layanan untuk shipping service
   shipping-service:
-    image: shipping-svc
+    # Menggunakan image dari registry
+    image: robifirmansyah/shipping-service
+    # Pemetaan port dari container ke host
     ports:
       - "3001:3001"
+    # Variabel lingkungan
     environment:
       AMQP_URL: amqp://guest:guest@rabbitmq:5672
+    # Bergantung pada layanan rabbitmq
     depends_on:
       - rabbitmq
+    # Container akan otomatis restart jika berhenti
     restart: always
+    # Jaringan yang digunakan
     networks:
       - rabbitmq_network
 
+  # Layanan RabbitMQ untuk messaging
   rabbitmq:
+    # Menggunakan image RabbitMQ dengan manajemen
     image: rabbitmq:3.11-management
+    # Pemetaan port dari container ke host
     ports:
       - "5672:5672"
       - "15672:15672"
+    # Volume untuk data dan log
     volumes:
         - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
         - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    # Container akan otomatis restart jika berhenti
     restart: always
+    # Jaringan yang digunakan
     networks:
     - rabbitmq_network
 
+# Definisi jaringan yang digunakan oleh semua layanan
 networks:
+  # Jaringan untuk RabbitMQ
   rabbitmq_network:
+    # Menggunakan driver bridge
     driver: bridge
