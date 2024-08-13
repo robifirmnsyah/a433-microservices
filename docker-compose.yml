@@ -1,0 +1,39 @@
+version: "3.8"
+services:
+  rabbitmq:
+    image: rabbitmq:3.11-management
+    container_name: rabbitmq_container
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+      - rabbitmq_log:/var/log/rabbitmq
+    networks:
+      - ecomm_network
+
+  order-service:
+    image: order-service:latest  # Ganti dengan tag yang sesuai
+    depends_on:
+      - rabbitmq
+    ports:
+      - 3000:3000
+    networks:
+      - ecomm_network
+
+  shipping-service:
+    image: shipping-service:latest  
+    depends_on:
+      - rabbitmq
+    ports:
+      - 3001:3001
+    networks:
+      - ecomm_network
+
+networks:
+  ecomm_network:
+    driver: bridge
+
+volumes:
+  rabbitmq_data:
+  rabbitmq_log:
