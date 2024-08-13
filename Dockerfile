@@ -10,7 +10,7 @@ COPY . .
 # Menginstal dependensi aplikasi yang tercantum dalam package.json
 RUN npm install
 
-# Jika Anda membangun aplikasi untuk produksi, gunakan npm ci untuk instalasi yang lebih cepat dan bersih
+# Gunakan npm ci untuk instalasi yang lebih cepat dan bersih
 RUN npm ci
 
 # Menginstal bash, yang mungkin diperlukan selama pengembangan atau untuk skrip tertentu
