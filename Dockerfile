@@ -1,27 +1,25 @@
-# Gunakan Node.js image sebagai base
+# Menggunakan image Node.js sebagai base image
 FROM node:18-alpine
 
-# Set working directory
+# Set work directory di dalam container
 WORKDIR /src
 
-# Copy package.json dan package-lock.json
-COPY package*.json ./
-
-# Install dependencies
-RUN npm install
-
-# Copy seluruh source code
+# Menyalin semua file dari direktori sumber ke direktori kerja dalam image
 COPY . .
 
-# Run npm ci instead of npm install. Here we are copying any other files
+# Menginstal dependensi aplikasi yang tercantum dalam package.json
+RUN npm install
+
+# Gunakan npm ci untuk instalasi yang lebih cepat dan bersih
 RUN npm ci
 
-# The alpine image doesn't come with bash pre-installed. We are installing it here because we might need to use it.
+# Menginstal bash, yang mungkin diperlukan selama pengembangan atau untuk skrip tertentu
 RUN apk add --no-cache bash
 
-# Expose port yang digunakan
+# Expose port yang akan digunakan oleh aplikasi
 EXPOSE 3001
 
-# Jalankan aplikasi
-CMD ["node", "index.js"]
+# Definisikan perintah untuk menjalankan aplikasi
+CMD ["npm", "start"]
+
 
