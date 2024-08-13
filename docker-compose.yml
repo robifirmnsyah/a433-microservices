@@ -1,0 +1,42 @@
+version: "3.7"
+
+services:
+  order-service:
+    image: order-svc:latest
+    ports:
+    - "3000:3000"
+    restart: always
+    depends_on:
+    - rabbitmq
+    environment:
+      AMQP_URL: amqp://guest:guest@rabbitmq:5672
+    networks:
+    - rabbitmq_network
+
+  shipping-service:
+    image: shipping-svc
+    ports:
+      - "3001:3001"
+    environment:
+      AMQP_URL: amqp://guest:guest@rabbitmq:5672
+    depends_on:
+      - rabbitmq
+    restart: always
+    networks:
+      - rabbitmq_network
+
+  rabbitmq:
+    image: rabbitmq:3.11-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    restart: always
+    networks:
+    - rabbitmq_network
+
+networks:
+  rabbitmq_network:
+    driver: bridge
